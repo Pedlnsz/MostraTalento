@@ -1,0 +1,67 @@
+{# Campos compartilhados entre cadastro e edicao. Variaveis: v (valores), fotos (so na edicao), editando #}
+{% set ocupacoes = ["Eletricista","Diarista","Manicure","Cabeleireiro(a)","Barbeiro","Pedreiro","Pintor","Encanador","Marceneiro","Costureira","Mecânico","Técnico de internet e TV","Editor de vídeo","Fotógrafo","Doces e salgados","Entregador"] %}
+
+<div class="progresso"></div>
+<div class="barra"><i></i></div>
+
+<div class="passo">
+  <h2>Quem é você?</h2>
+  <label for="nome">Seu nome</label>
+  <input id="nome" name="nome" type="text" autocomplete="name" maxlength="80" required value="{{ v.nome or '' }}">
+  <label for="ocupacao">O que você faz?<span class="dica">Ex.: eletricista, manicure, diarista</span></label>
+  <div class="combo">
+    <input id="ocupacao" name="ocupacao" type="text" maxlength="60" required value="{{ v.ocupacao or '' }}"
+           autocomplete="off" autocapitalize="sentences" role="combobox" aria-autocomplete="list" aria-expanded="false"
+           aria-controls="lista-ocupacoes" data-sugestoes='{{ ocupacoes|tojson }}'>
+    <ul id="lista-ocupacoes" class="combo-lista" role="listbox" aria-label="Sugestões de ocupação" hidden></ul>
+  </div>
+</div>
+
+<div class="passo">
+  <h2>Onde você atende?</h2>
+  <label for="regiao">Bairro ou cidade</label>
+  <input id="regiao" name="regiao" type="text" maxlength="80" required value="{{ v.regiao or '' }}">
+  <label for="whatsapp">Seu WhatsApp<span class="dica">Com DDD. É para onde o cliente vai chamar.</span></label>
+  <input id="whatsapp" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="(85) 99999-9999"
+         pattern="[0-9 ()+\-]{10,20}" required value="{{ v.whatsapp_raw or '' }}">
+</div>
+
+<div class="passo">
+  <h2>O que você faz?</h2>
+  <p class="suave">Conte os serviços que você oferece, de forma curta.</p>
+  <div id="servicos" data-max="5">
+    {% for s in v.servicos %}
+    <div class="serv">
+      <label>Serviço<span class="dica">Ex.: Instalação de chuveiro</span></label>
+      <input name="servico_titulo" type="text" maxlength="60" {% if loop.first %}required{% endif %} value="{{ s.titulo or '' }}">
+      <label>Explique em poucas palavras <span class="dica">(opcional)</span></label>
+      <textarea name="servico_desc" maxlength="200">{{ s.descricao or '' }}</textarea>
+    </div>
+    {% endfor %}
+  </div>
+  <button type="button" class="btn sec" id="add-servico">+ Adicionar outro serviço</button>
+</div>
+
+<div class="passo">
+  <h2>Fotos e confirmação</h2>
+  {% if fotos %}
+  <p class="suave">Suas fotos atuais. Marque as que quiser tirar.</p>
+  <div class="fotos-grid">
+    {% for f in fotos %}
+    <div class="foto-item">
+      <img src="{{ url_for('fotos', nome=f.arquivo) }}" alt="Foto de trabalho {{ loop.index }}" loading="lazy">
+      <label><input type="checkbox" name="remover_foto" value="{{ f.id }}"> Remover</label>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <label for="fotos">{% if fotos %}Adicionar mais fotos{% else %}Fotos de trabalhos que você já fez{% endif %}
+    <span class="dica">Até 6 fotos, tiradas do celular. Pode pular, mas fotos passam mais confiança.</span></label>
+  <input id="fotos" name="fotos" type="file" accept="image/*" multiple data-max="6">
+  <p class="suave" id="fotos-info" aria-live="polite"></p>
+
+  <label class="check" for="consentimento">
+    <input id="consentimento" name="consentimento" type="checkbox" value="1" required {% if v.consentimento %}checked{% endif %}>
+    <span>Autorizo mostrar publicamente meu nome, meu WhatsApp e minhas fotos na minha vitrine. Posso editar ou apagar tudo quando quiser.</span>
+  </label>
+</div>

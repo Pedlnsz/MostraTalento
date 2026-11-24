@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Vitrine apagada · MostraTalento{% endblock %}
+{% block content %}
+<h1>Sua vitrine foi apagada</h1>
+<p>Seus dados e suas fotos foram removidos. Se quiser, você pode criar uma nova a qualquer momento.</p>
+<a class="btn" href="{{ url_for('cadastro') }}">Criar uma nova vitrine</a>
+{% endblock %}

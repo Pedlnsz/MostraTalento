@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Guia do MEI · MostraTalento{% endblock %}
+{% block content %}
+<h1>Guia do MEI</h1>
+<p>Respostas curtas para você decidir se vale a pena ter CNPJ. Toque na pergunta para abrir.</p>
+
+<details data-q="o_que_e">
+  <summary>O que é o MEI?</summary>
+  <div>
+    <p>É um jeito simples e barato de ter CNPJ, sozinho e sem precisar de contador, para quem trabalha por conta própria. Com ele você passa a ter acesso a benefícios que o trabalhador informal não tem.</p>
+  </div>
+</details>
+
+<details data-q="quanto_custa">
+  <summary>Quanto custa por mês?</summary>
+  <div>
+    <p>Você paga uma guia mensal, o <b>DAS</b>. O valor depende do que você faz:</p>
+    <table>
+      <thead><tr><th>Atividade</th><th>Composição</th><th>Total</th></tr></thead>
+      <tbody>
+      {% for a, c, v in g.das %}<tr><td>{{ a }}</td><td>{{ c }}</td><td><b>{{ v }}</b></td></tr>{% endfor %}
+      </tbody>
+    </table>
+    <p>O vencimento é todo dia 20 do mês seguinte. Se cair em fim de semana ou feriado, passa para o próximo dia útil.</p>
+    <p>O limite de faturamento é de <b>R$ 81.000 por ano</b> (cerca de R$ 6.750 por mês, em média). Se passar disso, você migra para Microempresa. Não é problema: é sinal de que o negócio cresceu.</p>
+  </div>
+</details>
+
+<details data-q="beneficios">
+  <summary>Quais benefícios do INSS eu ganho?</summary>
+  <div>
+    <table>
+      <tbody>
+      {% for b, d in g.beneficios %}<tr><td><b>{{ b }}</b></td><td>{{ d }}</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</details>
+
+<details data-q="nota_fiscal">
+  <summary>Posso emitir nota fiscal?</summary>
+  <div>
+    <p>Sim. Com CNPJ você pode emitir nota fiscal quando o cliente pedir. Isso ajuda a vender para empresas e a passar mais confiança.</p>
+  </div>
+</details>
+
+<details data-q="passo_a_passo">
+  <summary>Como abrir o MEI sem cair em golpe?</summary>
+  <div>
+    <ol class="lista">
+      {% for p in g.passos %}<li>{{ p }}</li>{% endfor %}
+    </ol>
+    <div class="aviso"><b>Atenção:</b> abrir, alterar ou encerrar o MEI é sempre <b>grátis</b> nos canais oficiais. Se alguém cobrar, desconfie.</div>
+    <a class="btn zap" href="https://www.gov.br/empresas-e-negocios/pt-br/empreendedor" target="_blank" rel="noopener"
+       data-evento="guia_mei_gov_clicado">Abrir o site oficial (gov.br)</a>
+  </div>
+</details>
+
+<p class="fonte">Fonte: {{ g.fonte }}. Informações atualizadas em {{ g.atualizado_em }}. Valores e regras podem mudar, confira sempre no site oficial.</p>
+
+<a class="btn" href="{{ url_for('cadastro') }}">Criar minha vitrine</a>
+{% endblock %}

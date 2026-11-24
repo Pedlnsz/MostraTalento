@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Editar minha vitrine · MostraTalento{% endblock %}
+{% block content %}
+<h1>Editar minha vitrine</h1>
+{% if erro %}<div class="erro" role="alert">{{ erro }}</div>{% endif %}
+<form method="post" enctype="multipart/form-data">
+  {% include "_campos.html" %}
+  <button type="submit" class="btn zap">Salvar mudanças</button>
+</form>
+<a class="btn sec" href="{{ url_for('vitrine', slug=t.slug) }}">Ver minha vitrine</a>
+
+<div class="card" style="margin-top:28px">
+  <h2 style="margin-top:0">Apagar minha vitrine</h2>
+  <p class="suave">Seus dados e fotos serão apagados de vez. O link para de funcionar.</p>
+  <form method="post" action="{{ url_for('remover', token=t.edit_token) }}"
+        onsubmit="return confirm('Tem certeza? Isso apaga sua vitrine e não dá para desfazer.')">
+    <button type="submit" class="btn perigo">Apagar tudo</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Painel de métricas · MostraTalento{% endblock %}
+{% block wrapclass %}larga{% endblock %}
+{% macro barras(itens, total, classe='') %}
+  {% for nome, n in itens %}
+  <div class="bar-row">
+    <span>{{ nome }}</span>
+    <div class="bar {{ classe }}"><i style="width:{{ (100 * n / total) if total else 0 }}%"></i></div>
+    <b>{{ n }}</b>
+  </div>
+  {% endfor %}
+{% endmacro %}
+{% block content %}
+<h1>Painel de métricas do MVP</h1>
+<p class="suave">{{ m.participantes }} participante(s) contabilizado(s). IDs que começam com “{{ prefixo }}” (ex.: <code>?u={{ prefixo }}1</code>) ficam de fora, para você testar sem sujar os números.</p>
+<div class="btn-linha" style="max-width:420px">
+  <a class="btn sec" href="{{ url_for('export_eventos') }}">Baixar eventos (CSV)</a>
+  <a class="btn sec" href="{{ url_for('export_feedback') }}">Baixar feedback (CSV)</a>
+</div>
+
+<h2>Resumo contra as metas</h2>
+<div class="cartoes">
+  {% for titulo, valor, ok, meta in m.cartoes %}
+  <div class="cartao">
+    <div class="meta">{{ titulo }}</div>
+    <div class="valor">{{ valor }}</div>
+    <div class="meta">{{ meta }}
+      {% if ok is not none %}· <span class="{{ 'ok' if ok else 'nok' }}">{{ 'meta atingida ✔' if ok else 'abaixo da meta ✘' }}</span>{% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<h2>Funil do cadastro</h2>
+<div class="card">{{ barras(m.funil, m.funil[0][1]) }}</div>
+<p class="suave">Taxa de conclusão = concluídos ÷ iniciados = {{ m.concluidos }} ÷ {{ m.iniciados }} = <b>{{ m.taxa_conclusao }}%</b>.
+{% if m.n_tempos %}Tempo de cadastro: média {{ m.tempo_medio }}s, mediana {{ m.tempo_mediano }}s; {{ m.tempo_ate_5min }}% concluíram em até 5 minutos (n={{ m.n_tempos }}).{% endif %}</p>
+
+<h2>Uso das funcionalidades (participantes distintos)</h2>
+<div class="card">{{ barras(m.uso, m.participantes, 'amb') }}</div>
+<p class="suave">Visualizações de vitrines: {{ m.vitrine_views }} · Cliques no botão do WhatsApp: {{ m.whatsapp_cliques }}</p>
+
+<h2>Perguntas do guia do MEI mais abertas</h2>
+<div class="card">
+  {% if m.perguntas %}{{ barras(m.perguntas, m.perguntas[0][1]) }}{% else %}<p class="suave">Ainda sem dados.</p>{% endif %}
+</div>
+
+<h2>Facilidade de uso (nota 1 a 5) · n={{ m.n_feedback }}</h2>
+<div class="card">
+  {% set itens = [] %}{% for k, v in m.notas.items() %}{% set _ = itens.append(('Nota ' ~ k, v)) %}{% endfor %}
+  {{ barras(itens, m.n_feedback) }}
+</div>
+
+<h2>O que foi mais difícil (comentários)</h2>
+<div class="card">
+  {% for p, c in m.comentarios %}<p><b>{{ p }}:</b> {{ c }}</p>{% else %}<p class="suave">Sem comentários ainda.</p>{% endfor %}
+</div>
+{% endblock %}

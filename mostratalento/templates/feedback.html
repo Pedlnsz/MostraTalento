@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Sua opinião · MostraTalento{% endblock %}
+{% block content %}
+<h1>Sua opinião</h1>
+<p class="suave">São só 4 perguntas. Não precisa de nome.</p>
+{% if erro %}<div class="erro" role="alert">{{ erro }}</div>{% endif %}
+<form method="post">
+  <input type="hidden" name="s" value="{{ slug }}">
+
+  <fieldset style="border:0;padding:0;margin:0">
+    <legend style="font-weight:600;margin-top:16px">1. Foi fácil criar a sua vitrine?<span class="dica">1 = muito difícil · 5 = muito fácil</span></legend>
+    <div class="notas" style="margin-top:8px">
+      {% for i in range(1,6) %}<label><input type="radio" name="facilidade" value="{{ i }}" required><span>{{ i }}</span></label>{% endfor %}
+    </div>
+  </fieldset>
+
+  <fieldset style="border:0;padding:0;margin:0">
+    <legend style="font-weight:600;margin-top:22px">2. Você mandaria esse link para um cliente?</legend>
+    <div class="opcoes" style="margin-top:8px">
+      <label><input type="radio" name="enviaria_link" value="sim" required><span>Sim</span></label>
+      <label><input type="radio" name="enviaria_link" value="nao"><span>Não</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset style="border:0;padding:0;margin:0">
+    <legend style="font-weight:600;margin-top:22px">3. O guia do MEI foi útil?</legend>
+    <div class="opcoes" style="margin-top:8px">
+      <label><input type="radio" name="guia_util" value="sim" required><span>Sim</span></label>
+      <label><input type="radio" name="guia_util" value="nao"><span>Não</span></label>
+      <label><input type="radio" name="guia_util" value="nao_vi"><span>Não vi</span></label>
+    </div>
+  </fieldset>
+
+  <label for="dificuldade" style="margin-top:22px">4. O que foi mais difícil? <span class="dica">(opcional)</span></label>
+  <textarea id="dificuldade" name="dificuldade" maxlength="500"></textarea>
+
+  <button type="submit" class="btn zap" style="margin-top:18px">Enviar</button>
+</form>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Sua vitrine está pronta · MostraTalento{% endblock %}
+{% block content %}
+<h1>Pronto! Sua vitrine está no ar 🎉</h1>
+<p>Este é o link só seu. Mande para seus clientes.</p>
+
+<div class="card">
+  <div class="link-box">
+    <input id="link" type="text" readonly value="{{ link }}" aria-label="Link da sua vitrine">
+    <button type="button" class="btn" data-copiar="#link" data-evento="link_copiado" data-slug="{{ t.slug }}">Copiar</button>
+  </div>
+  <a class="btn zap" href="{{ wa_share }}" target="_blank" rel="noopener" data-evento="link_compartilhado_whatsapp" data-slug="{{ t.slug }}">Enviar pelo WhatsApp</a>
+  <a class="btn sec" href="{{ url_for('vitrine', slug=t.slug) }}">Ver como o cliente vê</a>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0">Guarde este link para editar</h2>
+  <p class="suave">Só quem tem este link consegue mudar ou apagar a sua vitrine.</p>
+  <div class="link-box">
+    <input id="link-edicao" type="text" readonly value="{{ edit_link }}" aria-label="Link para editar">
+    <button type="button" class="btn sec" data-copiar="#link-edicao">Copiar</button>
+  </div>
+  <a class="btn sec" href="{{ edit_link }}">Editar minha vitrine</a>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0">Quer virar MEI?</h2>
+  <a class="btn sec" href="{{ url_for('guia_mei') }}">Ver o guia do MEI</a>
+</div>
+
+<div class="card">
+  <h2 style="margin-top:0">Nos ajude a melhorar</h2>
+  <p>Leva menos de 1 minuto e a sua opinião é muito importante.</p>
+  <a class="btn" href="{{ url_for('feedback', s=t.slug) }}">Dar minha opinião</a>
+</div>
+{% endblock %}

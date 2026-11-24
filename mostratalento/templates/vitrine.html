@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ t.nome }} · {{ t.ocupacao }}{% endblock %}
+{% block meta %}
+<meta name="description" content="{{ t.nome }}, {{ t.ocupacao }} em {{ t.regiao }}. Veja os serviços e chame no WhatsApp.">
+<meta property="og:title" content="{{ t.nome }} · {{ t.ocupacao }}">
+<meta property="og:description" content="Atende em {{ t.regiao }}. Chame direto no WhatsApp.">
+{% if fotos %}<meta property="og:image" content="{{ url_for('fotos', nome=fotos[0].arquivo, _external=True) }}">{% endif %}
+{% endblock %}
+{% block content %}
+<section class="perfil">
+  <div class="avatar" aria-hidden="true">{{ t.nome[:1]|upper }}</div>
+  <h1>{{ t.nome }}</h1>
+  <p><span class="tag">{{ t.ocupacao }}</span></p>
+  <p class="suave">📍 Atende em {{ t.regiao }}</p>
+  <a class="btn zap" href="{{ url_for('whatsapp', slug=t.slug) }}">Chamar no WhatsApp</a>
+  <p class="suave" style="font-size:.85rem">{{ t.whatsapp|fone }}</p>
+</section>
+
+<h2>Serviços</h2>
+<div class="card">
+  {% for s in servicos %}
+  <div class="servico">
+    <h3>{{ s.titulo }}</h3>
+    {% if s.descricao %}<p>{{ s.descricao }}</p>{% else %}<p></p>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+
+{% if fotos %}
+<h2>Trabalhos realizados</h2>
+<div class="fotos-grid">
+  {% for f in fotos %}
+  <img src="{{ url_for('fotos', nome=f.arquivo) }}" alt="Trabalho realizado por {{ t.nome }}, foto {{ loop.index }}" loading="lazy">
+  {% endfor %}
+</div>
+{% endif %}
+
+<a class="btn zap" style="margin-top:20px" href="{{ url_for('whatsapp', slug=t.slug) }}">Chamar no WhatsApp</a>
+
+<div class="card" style="margin-top:28px">
+  <p style="margin-top:0"><b>É autônomo?</b> Crie sua vitrine grátis também.</p>
+  <a class="btn sec" href="{{ url_for('home') }}">Conhecer o MostraTalento</a>
+</div>
+{% endblock %}
