@@ -36,7 +36,7 @@ app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "troque-esta-chave-em-producao")
 app.config["MAX_CONTENT_LENGTH"] = 40 * 1024 * 1024
-app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=365)  # lembra a vitrine no celular por 1 ano
 
 ADMIN_KEY = os.environ.get("ADMIN_KEY", "mostratalento")
 # Participantes cujo ID comeca com este prefixo (ex.: ?u=teste1) ficam fora das metricas.
@@ -266,6 +266,24 @@ def pid():
     return session.get("pid", "anon")
 
 
+# ----------------------------------------------------------------------------
+# "Minha vitrine": o celular lembra o link de edicao (sem login nem senha)
+# ----------------------------------------------------------------------------
+def lembrar(token):
+    minhas = [x for x in session.get("minhas", []) if x != token]
+    session["minhas"] = ([token] + minhas)[:5]
+    session.permanent = True
+
+
+def esquecer(token):
+    session["minhas"] = [x for x in session.get("minhas", []) if x != token]
+
+
+@app.context_processor
+def menu():
+    return {"tem_vitrine": bool(session.get("minhas"))}
+
+
 def log(evento, trabalhador_id=None, extra=None):
     db = get_db()
     db.execute(
@@ -478,7 +496,8 @@ def cadastro():
     db.commit()
     log("cadastro_concluido", tid)
     log("pagina_gerada", tid)
-    return redirect(url_for("pronto", slug=slug, t=token))
+    lembrar(token)
+    return redirect(url_for("pronto", slug=slug, t=token, novo=1))
 
 
 def trabalhador_por_slug(slug):
@@ -511,6 +530,7 @@ def pronto(slug):
     t = trabalhador_por_slug(slug)
     if request.args.get("t") != t["edit_token"]:
         abort(404)
+    lembrar(t["edit_token"])  # quem abre o link num celular novo passa a ter "Minha vitrine" nele
     link = url_for("vitrine", slug=slug, _external=True)
     texto = f"Oi! Conheça meu trabalho e fale comigo direto pelo WhatsApp: {link}"
     return render_template(
@@ -518,7 +538,30 @@ def pronto(slug):
         wa_share="https://wa.me/?text=" + quote(texto),
         edit_link=url_for("editar", token=t["edit_token"], _external=True),
         og=url_for("og_imagem", slug=slug, v=versao(t)),
+        novo=bool(request.args.get("novo")),
     )
+
+
+@app.route("/minha-vitrine")
+def minha_vitrine():
+    db = get_db()
+    achadas = []
+    for tok in session.get("minhas", []):
+        t = db.execute("SELECT * FROM trabalhadores WHERE edit_token=?", (tok,)).fetchone()
+        if t:
+            achadas.append(t)
+    session["minhas"] = [t["edit_token"] for t in achadas]  # limpa vitrines ja apagadas
+    log("minha_vitrine_aberta", achadas[0]["id"] if achadas else None, extra=len(achadas))
+    if len(achadas) == 1:
+        t = achadas[0]
+        return redirect(url_for("pronto", slug=t["slug"], t=t["edit_token"]))
+    return render_template("minhas.html", vitrines=achadas)
+
+
+@app.route("/esquecer/<token>", methods=["POST"])
+def esquecer_celular(token):
+    esquecer(token)
+    return redirect(url_for("minha_vitrine"))
 
 
 @app.route("/v/<slug>")
@@ -707,6 +750,7 @@ def editar(token):
     servicos, fotos_atuais = carrega_vitrine(t)
 
     if request.method == "GET":
+        lembrar(t["edit_token"])
         v = dict(t)
         v["servicos"] = [dict(s) for s in servicos]
         v["whatsapp_raw"] = formata_whatsapp(t["whatsapp"])
@@ -768,6 +812,7 @@ def remover(token):
     apaga_arquivo(t["foto_perfil"])
     apaga_og(t["slug"])
     log("perfil_removido", t["id"])
+    esquecer(t["edit_token"])
     db.execute("DELETE FROM trabalhadores WHERE id=?", (t["id"],))
     db.commit()
     return render_template("removido.html")

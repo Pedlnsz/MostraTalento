@@ -13,7 +13,10 @@
 <body>
 <header class="topo">
   <a class="marca" href="{{ url_for('home') }}">Mostra<b>Talento</b></a>
-  <nav><a href="{{ url_for('guia_mei') }}">Guia do MEI</a></nav>
+  <nav class="menu">
+    <a href="{{ url_for('minha_vitrine') }}"{% if request.endpoint in ('minha_vitrine','pronto','editar') %} aria-current="page"{% endif %}>Minha vitrine</a>
+    <a href="{{ url_for('guia_mei') }}"{% if request.endpoint == 'guia_mei' %} aria-current="page"{% endif %}>Guia do MEI</a>
+  </nav>
 </header>
 <main class="wrap {% block wrapclass %}{% endblock %}">
 {% block content %}{% endblock %}

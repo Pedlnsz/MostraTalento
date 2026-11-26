@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Minha vitrine · MostraTalento{% endblock %}
+{% block content %}
+{% if vitrines %}
+<h1>Minhas vitrines</h1>
+<p class="suave">Este celular tem mais de uma vitrine guardada. Escolha qual quer abrir.</p>
+{% for t in vitrines %}
+<a class="card cartao-link" href="{{ url_for('pronto', slug=t.slug, t=t.edit_token) }}">
+  <b>{{ t.nome }}</b><span class="suave">{{ t.ocupacao }} · {{ t.regiao }}</span>
+</a>
+{% endfor %}
+{% else %}
+<h1>Minha vitrine</h1>
+<div class="card">
+  <p style="margin-top:0"><b>Não encontramos uma vitrine neste celular.</b></p>
+  <p class="suave">A vitrine fica guardada no celular e no navegador em que foi criada. Se você criou em outro aparelho, abra o <b>link de edição</b> que recebeu ao terminar o cadastro: depois disso ela aparece aqui também.</p>
+  <a class="btn" href="{{ url_for('cadastro') }}">Criar minha vitrine</a>
+</div>
+{% endif %}
+{% endblock %}

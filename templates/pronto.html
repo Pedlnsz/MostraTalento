@@ -1,8 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Sua vitrine está pronta · MostraTalento{% endblock %}
+{% block title %}Sua vitrine está pronta · MostraTalento<form method="post" action="{{ url_for('esquecer_celular', token=t.edit_token) }}" class="esquecer"
+      onsubmit="return confirm('Este celular vai parar de mostrar sua vitrine em “Minha vitrine”. A vitrine continua no ar. Continuar?')">
+  <button type="submit" class="link-botao">Usa este celular com outra pessoa? Esquecer minha vitrine neste celular</button>
+</form>
+{% endblock %}
 {% block content %}
+{% if novo %}
 <h1>Pronto! Sua vitrine está no ar</h1>
 <p>Este é o link só seu. Mande para seus clientes.</p>
+<p class="aviso-menu">Para voltar aqui depois, toque em <b>Minha vitrine</b>, no topo da tela.</p>
+{% else %}
+<h1>Minha vitrine</h1>
+<p>Este é o link da sua vitrine. Mande para seus clientes.</p>
+{% endif %}
 
 <div class="card">
   <div class="link-box">
@@ -11,6 +21,7 @@
   </div>
   <a class="btn zap" href="{{ wa_share }}" target="_blank" rel="noopener" data-evento="link_compartilhado_whatsapp" data-slug="{{ t.slug }}">Enviar pelo WhatsApp</a>
   <a class="btn sec" href="{{ url_for('vitrine', slug=t.slug) }}">Ver como o cliente vê</a>
+  {% if not novo %}<a class="btn sec" href="{{ edit_link }}">Editar minha vitrine</a>{% endif %}
 </div>
 
 <h2>Assim seu link aparece no WhatsApp</h2>
@@ -55,4 +66,8 @@
   <p>Leva menos de 1 minuto e a sua opinião é muito importante.</p>
   <a class="btn" href="{{ url_for('feedback', s=t.slug) }}">Dar minha opinião</a>
 </div>
+<form method="post" action="{{ url_for('esquecer_celular', token=t.edit_token) }}" class="esquecer"
+      onsubmit="return confirm('Este celular vai parar de mostrar sua vitrine em “Minha vitrine”. A vitrine continua no ar. Continuar?')">
+  <button type="submit" class="link-botao">Usa este celular com outra pessoa? Esquecer minha vitrine neste celular</button>
+</form>
 {% endblock %}

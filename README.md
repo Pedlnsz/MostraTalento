@@ -22,6 +22,31 @@ O teste precisa de uma URL que abra no celular de cada participante. Opções r�
   Configure `ADMIN_KEY` e `SECRET_KEY` e um disco persistente apontado por `DATA_DIR`
   (sem isso, banco e fotos somem a cada deploy).
 
+## Publicar no PythonAnywhere (gratuito)
+
+O plano gratuito guarda os arquivos, então o banco e as fotos não se perdem.
+
+1. Crie uma conta **Beginner** em pythonanywhere.com.
+2. Abra um console **Bash** (aba Consoles) e rode:
+   ```bash
+   git clone https://github.com/SEU_USUARIO_GITHUB/mostratalento.git
+   cd mostratalento
+   pip3.12 install --user -r requirements.txt
+   ```
+   (Se o repositório for privado, envie o zip pela aba **Files** e descompacte com `unzip`.)
+3. Aba **Web** → **Add a new web app** → **Manual configuration** → **Python 3.12**.
+4. Na mesma aba, abra o **WSGI configuration file**, apague tudo e cole o conteúdo de
+   `deploy/pythonanywhere_wsgi.py`, trocando `SEU_USUARIO`, a `ADMIN_KEY` e a `SECRET_KEY`.
+5. Em **Static files**, adicione: URL `/static/` → diretório `/home/SEU_USUARIO/mostratalento/static/`.
+6. Clique em **Reload**. O app fica em `https://SEU_USUARIO.pythonanywhere.com`.
+
+Depois:
+- **Todo mês**, entre na aba Web e clique em **"Run until 1 month from today"**, senão o app sai do ar.
+- Para atualizar o código: no console, `cd mostratalento && git pull` e depois **Reload** na aba Web.
+- **Backup** antes e depois do teste: na aba Files, baixe a pasta `data/` (banco + fotos),
+  ou no console rode `zip -r backup-dados.zip data`.
+- Links para os participantes: `https://SEU_USUARIO.pythonanywhere.com/?u=U01` … `?u=U10`.
+
 ## Como coletar as métricas no teste
 
 1. Entregue a cada participante um link com o ID dele: `https://SEU-LINK/?u=U01`, `?u=U02` … `?u=U10`.

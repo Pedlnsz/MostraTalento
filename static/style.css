@@ -77,6 +77,13 @@ legend{font-weight:600;padding:0;margin:0 0 8px}
 .mini-conta{font-size:.78rem;color:var(--suave);white-space:nowrap}
 .mini-vazio{color:#8A94A6;font-style:italic;font-weight:600}
 .tag.mini-vazio{background:none;border:1.5px dashed var(--borda)}
+.menu{display:flex;gap:14px;align-items:center}
+.menu a{font-size:.88rem;white-space:nowrap;padding:4px 0;border-bottom:2px solid transparent}
+.menu a[aria-current=page]{border-bottom-color:var(--logo)}
+.aviso-menu{background:var(--azul-claro2);border-left:4px solid var(--destaque);border-radius:8px;padding:10px 12px;font-size:.95rem}
+.cartao-link{display:grid;gap:2px;text-decoration:none;color:var(--texto)}
+.esquecer{margin:28px 0 0;text-align:center}
+.link-botao{background:none;border:0;padding:8px;font:inherit;font-size:.82rem;color:var(--suave);text-decoration:underline;cursor:pointer}
 /* icones */
 .ic{display:inline-block;flex:none;vertical-align:-3px}
 .perfil-circulo .ic.vazio{color:var(--azul);opacity:.55}
@@ -211,3 +218,4 @@ input[type=text],input[type=tel],input[type=file],textarea,select,.link-box inpu
 .chip input:checked+span{background:var(--azul)}
 .escolha input:checked+span{background:var(--azul-claro)}
 .btn.perigo{background:var(--card)}
+@media (max-width:380px){.topo{padding:12px}.marca{font-size:1rem}.menu{gap:10px}.menu a{font-size:.82rem}}
