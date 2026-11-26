@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Sua vitrine está pronta · MostraTalento{% endblock %}
 {% block content %}
-<h1>Pronto! Sua vitrine está no ar 🎉</h1>
+<h1>Pronto! Sua vitrine está no ar</h1>
 <p>Este é o link só seu. Mande para seus clientes.</p>
 
 <div class="card">
@@ -13,6 +13,26 @@
   <a class="btn sec" href="{{ url_for('vitrine', slug=t.slug) }}">Ver como o cliente vê</a>
 </div>
 
+<h2>Assim seu link aparece no WhatsApp</h2>
+<div class="zap-conversa">
+  <div class="zap-balao">
+    <img src="{{ og }}" alt="Cartão de prévia com seu nome, profissão e região" width="1200" height="630">
+    <div class="zap-texto">
+      <b>{{ t.nome }} · {{ t.ocupacao }}</b>
+      <span>Atende em {{ t.regiao }}. Chame direto no WhatsApp.</span>
+      <span class="zap-link">{{ link }}</span>
+    </div>
+  </div>
+</div>
+
+{% if t.mei == 'quero' %}
+<div class="card destaque">
+  <h2 style="margin-top:0">Você quer abrir seu MEI</h2>
+  <p>Veja quanto custa, quais direitos você ganha e o passo a passo grátis, sem cair em golpe.</p>
+  <a class="btn" href="{{ url_for('guia_mei') }}">Ver o guia do MEI</a>
+</div>
+{% endif %}
+
 <div class="card">
   <h2 style="margin-top:0">Guarde este link para editar</h2>
   <p class="suave">Só quem tem este link consegue mudar ou apagar a sua vitrine.</p>
@@ -23,10 +43,12 @@
   <a class="btn sec" href="{{ edit_link }}">Editar minha vitrine</a>
 </div>
 
+{% if t.mei != 'quero' %}
 <div class="card">
-  <h2 style="margin-top:0">Quer virar MEI?</h2>
+  <h2 style="margin-top:0">{% if t.mei == 'sim' %}Dúvidas sobre o seu MEI?{% else %}Quer virar MEI?{% endif %}</h2>
   <a class="btn sec" href="{{ url_for('guia_mei') }}">Ver o guia do MEI</a>
 </div>
+{% endif %}
 
 <div class="card">
   <h2 style="margin-top:0">Nos ajude a melhorar</h2>

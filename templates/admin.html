@@ -11,11 +11,13 @@
   {% endfor %}
 {% endmacro %}
 {% block content %}
+{% from "_icones.html" import icone %}
 <h1>Painel de métricas do MVP</h1>
 <p class="suave">{{ m.participantes }} participante(s) contabilizado(s). IDs que começam com “{{ prefixo }}” (ex.: <code>?u={{ prefixo }}1</code>) ficam de fora, para você testar sem sujar os números.</p>
-<div class="btn-linha" style="max-width:420px">
+<div class="btn-linha" style="max-width:640px">
   <a class="btn sec" href="{{ url_for('export_eventos') }}">Baixar eventos (CSV)</a>
   <a class="btn sec" href="{{ url_for('export_feedback') }}">Baixar feedback (CSV)</a>
+  <a class="btn sec" href="{{ url_for('export_vitrines') }}">Baixar vitrines (CSV)</a>
 </div>
 
 <h2>Resumo contra as metas</h2>
@@ -25,7 +27,7 @@
     <div class="meta">{{ titulo }}</div>
     <div class="valor">{{ valor }}</div>
     <div class="meta">{{ meta }}
-      {% if ok is not none %}· <span class="{{ 'ok' if ok else 'nok' }}">{{ 'meta atingida ✔' if ok else 'abaixo da meta ✘' }}</span>{% endif %}
+      {% if ok is not none %}· <span class="{{ 'ok' if ok else 'nok' }}">{{ icone('check' if ok else 'x', 14) }}{{ 'meta atingida' if ok else 'abaixo da meta' }}</span>{% endif %}
     </div>
   </div>
   {% endfor %}
@@ -39,6 +41,13 @@
 <h2>Uso das funcionalidades (participantes distintos)</h2>
 <div class="card">{{ barras(m.uso, m.participantes, 'amb') }}</div>
 <p class="suave">Visualizações de vitrines: {{ m.vitrine_views }} · Cliques no botão do WhatsApp: {{ m.whatsapp_cliques }}</p>
+
+<h2>Perfil das vitrines criadas · n={{ m.n_vitrines }}</h2>
+<div class="card">{{ barras(m.perfil, m.n_vitrines, 'amb') }}</div>
+
+<h2>Formalização (MEI) · n={{ m.n_vitrines }}</h2>
+<div class="card">{{ barras(m.mei, m.n_vitrines) }}</div>
+<p class="suave">“Querem abrir MEI” é o público direto da meta 8.3 (formalização). Informação declarada pelo próprio trabalhador.</p>
 
 <h2>Perguntas do guia do MEI mais abertas</h2>
 <div class="card">

@@ -3,9 +3,9 @@
 {% block content %}
 <h1>Editar minha vitrine</h1>
 {% if erro %}<div class="erro" role="alert">{{ erro }}</div>{% endif %}
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" class="form-edicao">
   {% include "_campos.html" %}
-  <button type="submit" class="btn zap">Salvar mudanças</button>
+  <button type="submit" class="btn">Salvar mudanças</button>
 </form>
 <a class="btn sec" href="{{ url_for('vitrine', slug=t.slug) }}">Ver minha vitrine</a>
 

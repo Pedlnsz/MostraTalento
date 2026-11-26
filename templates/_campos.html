@@ -1,0 +1,171 @@
+{# Campos compartilhados entre cadastro e edicao.
+   Variaveis: v (valores), fotos e t (so na edicao). #}
+{% from "_icones.html" import icone, modelos %}
+{% set editando = fotos is defined and fotos is not none %}
+{{ modelos() }}
+
+<div class="progresso" aria-live="polite"></div>
+<div class="barra"><i></i></div>
+
+{# Previa ao vivo: a vitrine vai se montando enquanto a pessoa preenche (etapas 1 a 5) #}
+<aside class="mini-previa so-js" id="mini-previa" aria-label="Sua vitrine até agora">
+  <div class="mini-rotulo"><span>Sua vitrine</span><small>vai se montando enquanto você preenche</small></div>
+  <div class="mini-cartao" id="mini-cartao"></div>
+</aside>
+
+{# ------------------------------------------------------------------ 1 #}
+<section class="passo" data-titulo="Seus dados">
+  <h2>Seus dados</h2>
+  <label for="nome">Seu nome</label>
+  <input id="nome" name="nome" type="text" autocomplete="name" autocapitalize="words" maxlength="80" required value="{{ v.nome or '' }}">
+
+  <label for="whatsapp">Seu WhatsApp<span class="dica">Com DDD. É para onde o cliente vai chamar.</span></label>
+  <input id="whatsapp" name="whatsapp" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(85) 99999-9999"
+         pattern="[0-9 \(\)\+\-]{10,20}" required data-mascara="fone" value="{{ v.whatsapp_raw or '' }}">
+
+  <label for="cidade">Cidade</label>
+  <input id="cidade" name="cidade" type="text" maxlength="40" autocapitalize="words" autocomplete="address-level2" required
+         placeholder="Ex.: Fortaleza" value="{{ v.cidade or '' }}">
+
+  <label for="bairro">Bairro<span class="dica">Onde você atende ou trabalha.</span></label>
+  <input id="bairro" name="bairro" type="text" maxlength="40" autocapitalize="words" required
+         placeholder="Ex.: Messejana" value="{{ v.bairro or '' }}">
+</section>
+
+{# ------------------------------------------------------------------ 2 #}
+<section class="passo" data-titulo="Profissão">
+  <h2>Sua profissão</h2>
+  <label for="ocupacao">Qual a sua profissão?<span class="dica">Se não estiver na lista, escreva do seu jeito.</span></label>
+  <div class="combo">
+    <input id="ocupacao" name="ocupacao" type="text" maxlength="60" required autocomplete="off" autocapitalize="sentences"
+           placeholder="Ex.: eletricista, manicure, diarista" value="{{ v.ocupacao or '' }}"
+           role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="lista-ocupacoes"
+           data-sugestoes='{{ PROFISSOES|tojson }}' data-sinonimos='{{ SINONIMOS|tojson }}'>
+    <ul id="lista-ocupacoes" class="combo-lista" role="listbox" aria-label="Sugestões de profissão" hidden></ul>
+  </div>
+
+  <fieldset>
+    <legend>Há quanto tempo você trabalha nessa profissão?<span class="dica">Opcional. Aparece na sua vitrine como selo.</span></legend>
+    <div class="chips">
+      {% for cod, rotulo in EXPERIENCIA %}
+      <label class="chip"><input type="radio" name="experiencia" value="{{ cod }}" data-rotulo="{{ rotulo }}" {% if v.experiencia == cod %}checked{% endif %}><span>{{ rotulo }}</span></label>
+      {% endfor %}
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Você tem MEI (CNPJ)?<span class="dica">Opcional. Quem já tem ganha o selo “MEI formalizado”.</span></legend>
+    <div class="escolhas">
+      {% for cod, rotulo in MEI_OPCOES %}
+      <label class="escolha"><input type="radio" name="mei" value="{{ cod }}" {% if v.mei == cod %}checked{% endif %}><span>{{ rotulo }}</span></label>
+      {% endfor %}
+    </div>
+  </fieldset>
+</section>
+
+{# ------------------------------------------------------------------ 3 #}
+<section class="passo" data-titulo="Serviços">
+  <h2>Seus serviços</h2>
+  <p class="suave">Conte os serviços que você faz, de forma curta.</p>
+  <div id="servicos" data-max="5">
+    {% for s in v.servicos %}
+    <div class="serv">
+      <label>Serviço<span class="dica">Ex.: Instalação de chuveiro</span></label>
+      <input name="servico_titulo" type="text" maxlength="60" {% if loop.first %}required{% endif %} value="{{ s.titulo or '' }}">
+      <label>Explique em poucas palavras <span class="dica">(opcional)</span></label>
+      <textarea name="servico_desc" maxlength="200">{{ s.descricao or '' }}</textarea>
+    </div>
+    {% endfor %}
+  </div>
+  <button type="button" class="btn sec" id="add-servico">+ Adicionar outro serviço</button>
+
+  <fieldset>
+    <legend>Atende em domicílio?<span class="dica">Opcional. Quer dizer ir até a casa do cliente.</span></legend>
+    <div class="chips">
+      <label class="chip"><input type="radio" name="domicilio" value="sim" {% if v.domicilio == 1 %}checked{% endif %}><span>Sim</span></label>
+      <label class="chip"><input type="radio" name="domicilio" value="nao" {% if v.domicilio == 0 %}checked{% endif %}><span>Não</span></label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Dias de atendimento<span class="dica">Opcional. Toque em todos que valem.</span></legend>
+    <div class="chips dias">
+      {% for cod, rotulo in DIAS %}
+      <label class="chip"><input type="checkbox" name="dias" value="{{ cod }}" {% if cod in v.dias_lista %}checked{% endif %}><span>{{ rotulo }}</span></label>
+      {% endfor %}
+    </div>
+  </fieldset>
+
+  <label for="horario">Horário de atendimento <span class="dica">Opcional. Ex.: 8h às 18h</span></label>
+  <input id="horario" name="horario" type="text" maxlength="40" value="{{ v.horario or '' }}">
+</section>
+
+{# ------------------------------------------------------------------ 4 #}
+<section class="passo" data-titulo="Foto de perfil">
+  <h2>Sua foto de perfil</h2>
+  <p class="suave">Uma foto do seu rosto passa confiança para o cliente. Pode pular se quiser.</p>
+
+  <fieldset class="fotos-bloco" data-fotos="perfil" data-max="1">
+    <legend class="sr">Foto do seu rosto</legend>
+    <div class="perfil-escolha">
+      <div class="perfil-circulo js-thumbs" {% if editando and t.foto_perfil %}data-atual="{{ url_for('fotos', nome=t.foto_perfil) }}"{% endif %}>
+        {% if editando and t.foto_perfil %}<img src="{{ url_for('fotos', nome=t.foto_perfil) }}" alt="Sua foto atual">{% else %}{{ icone("pessoa", 44, "ic vazio") }}{% endif %}
+      </div>
+      <div class="perfil-botoes">
+        <label class="btn sec pick"><input class="js-pick" type="file" accept="image/*" capture="user">{{ icone("camera", 20) }}Tirar selfie</label>
+        <label class="btn sec pick"><input class="js-pick" type="file" accept="image/*">{{ icone("imagem", 20) }}Escolher foto</label>
+      </div>
+    </div>
+    <input class="js-real" name="foto_perfil" type="file" accept="image/*" aria-label="Foto do seu rosto">
+    {% if editando and t.foto_perfil %}
+    <label class="check-simples"><input type="checkbox" name="remover_foto_perfil" value="1" class="js-remover-perfil"> Tirar a foto do rosto</label>
+    {% endif %}
+  </fieldset>
+
+</section>
+
+{# ------------------------------------------------------------------ 5 #}
+<section class="passo" data-titulo="Fotos do trabalho">
+  <h2>Fotos do seu trabalho</h2>
+  <p class="suave">Mostre trabalhos que você já fez. Pode pular e colocar depois, editando a vitrine.</p>
+
+  {% set existentes = fotos|length if editando else 0 %}
+  <fieldset class="fotos-bloco" data-fotos="trabalhos" data-max="{{ MAX_FOTOS - existentes }}">
+    <legend class="sr">Fotos de trabalhos que você já fez</legend>
+    <p class="dica-solta">Até {{ MAX_FOTOS }} fotos.</p>
+    {% if editando and fotos %}
+    <div class="fotos-grid fotos-existentes">
+      {% for f in fotos %}
+      <div class="foto-item">
+        <img src="{{ url_for('fotos', nome=f.arquivo) }}" alt="Foto de trabalho {{ loop.index }}" loading="lazy">
+        <label><input type="checkbox" name="remover_foto" value="{{ f.id }}"> Remover</label>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <div class="fotos-grid miniaturas js-thumbs" aria-live="polite"></div>
+    <p class="suave js-info" aria-live="polite"></p>
+    <div class="btn-linha pick-linha">
+      <label class="btn sec pick"><input class="js-pick" type="file" accept="image/*" capture="environment">{{ icone("camera", 20) }}Tirar foto</label>
+      <label class="btn sec pick"><input class="js-pick" type="file" accept="image/*" multiple>{{ icone("imagem", 20) }}Da galeria</label>
+    </div>
+    <input class="js-real" name="fotos" type="file" accept="image/*" multiple aria-label="Fotos de trabalhos">
+  </fieldset>
+</section>
+
+{# ------------------------------------------------------------------ 6 #}
+<section class="passo" data-titulo="Prévia" data-previa>
+  <h2>Veja como ficou</h2>
+  <div class="so-js">
+    <p class="suave">É assim que o cliente vai ver a sua vitrine. Para mudar algo, toque em <b>Voltar</b>.</p>
+    <div class="previa-moldura">
+      <div class="previa-rotulo">Prévia da sua vitrine</div>
+      <div id="previa" class="previa"></div>
+    </div>
+  </div>
+
+  <label class="check" for="consentimento">
+    <input id="consentimento" name="consentimento" type="checkbox" value="1" required {% if v.consentimento %}checked{% endif %}>
+    <span>Autorizo mostrar publicamente meu nome, meu WhatsApp e minhas fotos na minha vitrine. Posso editar ou apagar tudo quando quiser.</span>
+  </label>
+</section>

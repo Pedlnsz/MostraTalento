@@ -3,14 +3,14 @@
 {% block content %}
 <h1>Criar minha vitrine</h1>
 {% if erro %}<div class="erro" role="alert">{{ erro }}</div>{% endif %}
-<form method="post" enctype="multipart/form-data" data-stepper>
+<form method="post" enctype="multipart/form-data" data-stepper data-inicio="{{ passo or 1 }}">
   {% include "_campos.html" %}
 
   <div class="nav-js">
     <button type="button" class="btn sec js-voltar">Voltar</button>
     <button type="button" class="btn js-proximo">Continuar</button>
-    <button type="submit" class="btn zap js-enviar" style="display:none">Criar minha vitrine</button>
+    <button type="submit" class="btn js-enviar" style="display:none">Criar minha vitrine</button>
   </div>
-  <div class="nav-sem-js"><button type="submit" class="btn zap">Criar minha vitrine</button></div>
+  <div class="nav-sem-js"><button type="submit" class="btn">Criar minha vitrine</button></div>
 </form>
 {% endblock %}

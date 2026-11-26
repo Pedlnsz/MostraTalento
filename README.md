@@ -1,15 +1,3 @@
-# MostraTalento
-
-Vitrine digital gratuita para trabalhadores autônomos e informais. O trabalhador
-preenche um cadastro guiado em poucos passos, recebe uma página pública com seus
-serviços e fotos, e um link para compartilhar no WhatsApp. O cliente chama direto
-pelo botão da vitrine. O app também traz um guia simples para abrir o MEI e um
-painel de métricas para validar o MVP com usuários reais.
-
-Projeto de extensão da disciplina F108 (Universidade de Fortaleza), alinhado à
-**ODS 8: Trabalho decente e crescimento econômico**, metas 8.3, 8.5 e 8.6.
-
-
 # MostraTalento — MVP
 
 Cadastro guiado → vitrine pública com botão do WhatsApp → guia do MEI, com coleta de métricas embutida.

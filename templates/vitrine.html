@@ -2,16 +2,28 @@
 {% block title %}{{ t.nome }} · {{ t.ocupacao }}{% endblock %}
 {% block meta %}
 <meta name="description" content="{{ t.nome }}, {{ t.ocupacao }} em {{ t.regiao }}. Veja os serviços e chame no WhatsApp.">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="MostraTalento">
 <meta property="og:title" content="{{ t.nome }} · {{ t.ocupacao }}">
-<meta property="og:description" content="Atende em {{ t.regiao }}. Chame direto no WhatsApp.">
-{% if fotos %}<meta property="og:image" content="{{ url_for('fotos', nome=fotos[0].arquivo, _external=True) }}">{% endif %}
+<meta property="og:description" content="Atende em {{ t.regiao }}{% if t.experiencia %} · {{ t.experiencia|experiencia }}{% endif %}. Chame direto no WhatsApp.">
+<meta property="og:url" content="{{ url }}">
+<meta property="og:image" content="{{ og }}">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Cartão de {{ t.nome }}, {{ t.ocupacao }}">
+<meta name="twitter:card" content="summary_large_image">
 {% endblock %}
 {% block content %}
 <section class="perfil">
+  {% if t.foto_perfil %}
+  <img class="avatar-foto" src="{{ url_for('fotos', nome=t.foto_perfil) }}" alt="Foto de {{ t.nome }}" width="112" height="112">
+  {% else %}
   <div class="avatar" aria-hidden="true">{{ t.nome[:1]|upper }}</div>
+  {% endif %}
   <h1>{{ t.nome }}</h1>
   <p><span class="tag">{{ t.ocupacao }}</span></p>
-  <p class="suave">📍 Atende em {{ t.regiao }}</p>
+  {% include "_selos.html" %}
   <a class="btn zap" href="{{ url_for('whatsapp', slug=t.slug) }}">Chamar no WhatsApp</a>
   <p class="suave" style="font-size:.85rem">{{ t.whatsapp|fone }}</p>
 </section>
@@ -21,7 +33,7 @@
   {% for s in servicos %}
   <div class="servico">
     <h3>{{ s.titulo }}</h3>
-    {% if s.descricao %}<p>{{ s.descricao }}</p>{% else %}<p></p>{% endif %}
+    <p>{{ s.descricao }}</p>
   </div>
   {% endfor %}
 </div>
@@ -36,8 +48,9 @@
 {% endif %}
 
 <a class="btn zap" style="margin-top:20px" href="{{ url_for('whatsapp', slug=t.slug) }}">Chamar no WhatsApp</a>
+<p class="nota-fonte">Informações enviadas pelo próprio profissional.</p>
 
-<div class="card" style="margin-top:28px">
+<div class="card" style="margin-top:20px">
   <p style="margin-top:0"><b>É autônomo?</b> Crie sua vitrine grátis também.</p>
   <a class="btn sec" href="{{ url_for('home') }}">Conhecer o MostraTalento</a>
 </div>

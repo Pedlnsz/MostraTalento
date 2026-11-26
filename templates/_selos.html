@@ -1,0 +1,13 @@
+{# Selos e informacoes de atendimento da vitrine. Variavel: t #}
+{% from "_icones.html" import icone %}
+{% if t.experiencia or t.mei == 'sim' %}
+<div class="selos">
+  {% if t.experiencia %}<span class="selo exp">{{ icone("medalha", 16) }}{{ t.experiencia|experiencia }}</span>{% endif %}
+  {% if t.mei == 'sim' %}<span class="selo mei">{{ icone("check", 16) }}MEI formalizado</span>{% endif %}
+</div>
+{% endif %}
+<ul class="info">
+  <li>{{ icone("pin") }}Atende em {{ t.regiao }}</li>
+  {% if t.domicilio == 1 %}<li>{{ icone("casa") }}Atende em domicílio</li>{% endif %}
+  {% if t.dias or t.horario %}<li>{{ icone("relogio") }}{{ t.dias|dias }}{% if t.dias and t.horario %} · {% endif %}{{ t.horario }}</li>{% endif %}
+</ul>
