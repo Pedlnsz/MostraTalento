@@ -15,6 +15,15 @@
 <meta name="twitter:card" content="summary_large_image">
 {% endblock %}
 {% block content %}
+{% if dono %}
+<div class="faixa-dono">
+  <p>Você está vendo sua vitrine como o cliente vê.</p>
+  <div class="btn-linha">
+    <a class="btn sec" href="{{ voltar }}">Voltar</a>
+    <a class="btn zap" href="{{ wa_share }}" target="_blank" rel="noopener" data-evento="link_compartilhado_whatsapp" data-slug="{{ t.slug }}">Enviar pelo WhatsApp</a>
+  </div>
+</div>
+{% endif %}
 <section class="perfil">
   {% if t.foto_perfil %}
   <img class="avatar-foto" src="{{ url_for('fotos', nome=t.foto_perfil) }}" alt="Foto de {{ t.nome }}" width="112" height="112">

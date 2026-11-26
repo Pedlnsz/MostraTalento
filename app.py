@@ -568,8 +568,12 @@ def esquecer_celular(token):
 def vitrine(slug):
     t = trabalhador_por_slug(slug)
     servicos, fotos = carrega_vitrine(t)
-    log("vitrine_visualizada", t["id"])
-    return render_template("vitrine.html", t=t, servicos=servicos, fotos=fotos,
+    dono = t["edit_token"] in session.get("minhas", [])
+    log("vitrine_visualizada", t["id"], extra="dono" if dono else None)
+    link = url_for("vitrine", slug=slug, _external=True)
+    wa_share = "https://wa.me/?text=" + quote(f"Oi! Conheça meu trabalho e fale comigo direto pelo WhatsApp: {link}")
+    return render_template("vitrine.html", t=t, servicos=servicos, fotos=fotos, dono=dono, wa_share=wa_share,
+                           voltar=url_for("pronto", slug=slug, t=t["edit_token"]) if dono else None,
                            og=url_for("og_imagem", slug=slug, v=versao(t), _external=True),
                            url=url_for("vitrine", slug=slug, _external=True))
 

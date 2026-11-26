@@ -84,6 +84,10 @@ legend{font-weight:600;padding:0;margin:0 0 8px}
 .cartao-link{display:grid;gap:2px;text-decoration:none;color:var(--texto)}
 .esquecer{margin:28px 0 0;text-align:center}
 .link-botao{background:none;border:0;padding:8px;font:inherit;font-size:.82rem;color:var(--suave);text-decoration:underline;cursor:pointer}
+.faixa-dono{margin:-4px 0 16px;padding:12px;background:var(--azul-claro2);border:2px solid var(--destaque);border-radius:14px}
+.faixa-dono p{margin:0 0 4px;font-weight:600;font-size:.95rem}
+.faixa-dono .btn{margin:6px 0 0;font-size:.95rem;padding:10px 12px;min-height:46px}
+.mini-pe{margin-top:2px}
 /* icones */
 .ic{display:inline-block;flex:none;vertical-align:-3px}
 .perfil-circulo .ic.vazio{color:var(--azul);opacity:.55}
@@ -219,3 +223,7 @@ input[type=text],input[type=tel],input[type=file],textarea,select,.link-box inpu
 .escolha input:checked+span{background:var(--azul-claro)}
 .btn.perigo{background:var(--card)}
 @media (max-width:380px){.topo{padding:12px}.marca{font-size:1rem}.menu{gap:10px}.menu a{font-size:.82rem}}
+.faixa-dono .btn{display:flex;align-items:center;justify-content:center;text-align:center}
+.topo{gap:12px}
+@media (max-width:420px){.marca{font-size:1.05rem}.menu{gap:12px}.menu a{font-size:.84rem}}
+.cta-final{margin-top:22px}

@@ -101,6 +101,8 @@ outro.post(f"/esquecer/{token}")
 ok(outro.get("/minha-vitrine").status_code == 200, "esquecer neste celular funciona")
 ok(c.get("/minha-vitrine").status_code == 302, "esquecer num celular nao afeta o outro")
 ok(b'href="/minha-vitrine"' in c.get("/").data, "menu tem Minha vitrine")
+ok("Você está vendo sua vitrine".encode() in c.get(f"/v/{slug}").data, "dono ve faixa Voltar/Enviar na vitrine")
+ok("Você está vendo sua vitrine".encode() not in mt.app.test_client().get(f"/v/{slug}").data, "cliente nao ve a faixa do dono")
 
 r = c.get(f"/v/{slug}")
 html = r.data.decode()

@@ -3,7 +3,6 @@
 <section class="hero">
   <h1>Seu trabalho merece ser visto.</h1>
   <p>Crie sua vitrine grátis em poucos minutos e mande o link para seus clientes pelo WhatsApp.</p>
-  <a class="btn" href="{{ url_for('cadastro') }}">Criar minha vitrine</a>
 </section>
 
 <ol class="passos-home">
@@ -17,4 +16,6 @@
   <p>Veja quanto custa, quais benefícios você ganha e como abrir o MEI de graça, sem cair em golpe.</p>
   <a class="btn sec" href="{{ url_for('guia_mei') }}">Ver o guia do MEI</a>
 </div>
+
+<a class="btn cta-final" href="{{ url_for('cadastro') }}">Criar minha vitrine</a>
 {% endblock %}

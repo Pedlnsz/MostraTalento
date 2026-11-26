@@ -409,13 +409,10 @@
     if (mei === "sim") { var s2 = el("span", "selo mei"); s2.appendChild(icone("check", 12)); s2.appendChild(document.createTextNode("MEI")); linha.appendChild(s2); }
     var lc = el("span", "mini-local" + (local ? "" : " mini-vazio")); lc.appendChild(icone("pin", 13)); lc.appendChild(document.createTextNode(local || "Seu bairro")); linha.appendChild(lc);
     alvo.appendChild(linha);
-    var pe = el("div", "mini-pe");
-    pe.appendChild(el("span", "mini-zap", "Chamar no WhatsApp"));
     var partes = [];
     if (nServ) partes.push(nServ + (nServ > 1 ? " serviços" : " serviço"));
     if (nFotos) partes.push(nFotos + (nFotos > 1 ? " fotos" : " foto"));
-    if (partes.length) pe.appendChild(el("span", "mini-conta", partes.join(" · ")));
-    alvo.appendChild(pe);
+    if (partes.length) { var pe = el("div", "mini-pe"); pe.appendChild(el("span", "mini-conta", partes.join(" · "))); alvo.appendChild(pe); }
   }
 
   if (form) {
